@@ -12,13 +12,18 @@ import { MoonPhase } from '../components/MoonPhase.jsx';
 import { MoonPosition } from '../components/MoonPosition';
 import { Countdown, MoonRiseSet } from '../components/MoonRiseSet';
 import { ProductHunt } from '../components/ProductHunt.jsx';
+import { contactEmail } from '../lib/constants.js';
+import { copyToClipboard } from '../shared/browser/copyToClipboard.js';
 import { PageContent } from '../shared/browser/PageContent';
-import { copyContactEmailEffect } from '../shared/browser/store/sharedEffects.js';
-import { contactEmail } from '../shared/js/constants.js';
-import { AlsoBuilt } from '../shared/semi/AlsoBuilt.jsx';
+import { setToastEffect } from '../shared/browser/store/sharedEffects.js';
 import { Flex } from '../shared/semi/Flex.jsx';
 import { IconButton } from '../shared/semi/IconButton.jsx';
 import { updateMoonData, useInitMoonData, useMoonShape } from '../store/moonCats.jsx';
+
+async function copyFeedbackEmail() {
+  await copyToClipboard(contactEmail);
+  setToastEffect('Copied!');
+}
 
 export const Home = fastMemo(() => {
   useInitMoonData();
@@ -98,7 +103,7 @@ export const Home = fastMemo(() => {
             Source code
           </Button>
         </a>
-        <Button theme="outline" icon={<RiMailLine />} onClick={copyContactEmailEffect}>
+        <Button theme="outline" icon={<RiMailLine />} onClick={copyFeedbackEmail}>
           Feedback: {contactEmail}
         </Button>
         <a href="https://buy.stripe.com/14k3fYcz633kb2oeV1" target="_blank">
@@ -107,8 +112,6 @@ export const Home = fastMemo(() => {
           </Button>
         </a>
       </Flex>
-
-      <AlsoBuilt />
     </PageContent>
   );
 });

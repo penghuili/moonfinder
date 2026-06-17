@@ -1,14 +1,20 @@
 const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
 const lib = process.argv[2];
 
-execSync(`rm -rf src/shared && mkdir src/shared`);
-execSync(`cp -a ../private-sharedjs/lib/js src/shared/js`);
-execSync(`cp -a ../private-sharedjs/lib/browser src/shared/browser`);
+const sharedDir = path.join(__dirname, '..', 'src', 'shared');
+const privateSharedDir = path.join(__dirname, '..', '..', 'private-sharedjs', 'lib');
+
+fs.rmSync(sharedDir, { recursive: true, force: true });
+fs.mkdirSync(sharedDir, { recursive: true });
+fs.cpSync(path.join(privateSharedDir, 'js'), path.join(sharedDir, 'js'), { recursive: true });
+fs.cpSync(path.join(privateSharedDir, 'browser'), path.join(sharedDir, 'browser'), { recursive: true });
 if (lib === 'radix') {
-  execSync(`cp -a ../private-sharedjs/lib/radix src/shared/radix`);
+  fs.cpSync(path.join(privateSharedDir, 'radix'), path.join(sharedDir, 'radix'), { recursive: true });
 } else if (lib === 'semi') {
-  execSync(`cp -a ../private-sharedjs/lib/semi src/shared/semi`);
+  fs.cpSync(path.join(privateSharedDir, 'semi'), path.join(sharedDir, 'semi'), { recursive: true });
 }
 // execSync(
 //   `rm -f scripts/upload.js && cp -a ../private-sharedjs/scripts/upload.js scripts/upload.js`

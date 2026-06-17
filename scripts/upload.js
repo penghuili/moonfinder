@@ -40,17 +40,19 @@ function uploadIndex(bucket) {
 
 function deleteOldVersion(bucket) {
   console.log('Deleting old versions ...');
-  // Retrieve the list of folder names (versions) from S3
-  const command = `aws s3 ls ${bucket} --recursive | awk '{print $4}' | grep '/' | cut -d/ -f1 | uniq`;
-  const result = execSync(command).toString();
-  // Split the result into an array, filter out 'index.html' and other non-versioned entries, and then sort
-  const versions = result
+  const result = execSync(`aws s3 ls ${bucket} --recursive`).toString();
+  const versions = [...new Set(
+    result
     .split('\n')
-    .filter(v => v && v !== 'index.html' && /^\d{14}$/.test(v))
+    .map(line => line.trim().split(/\s+/).at(-1))
+    .filter(key => key && key.includes('/'))
+    .map(key => key.split('/')[0])
+    .filter(version => /^\d{14}$/.test(version))
+  )]
     .sort();
-  // If there are more than 10 versions, remove the oldest ones
+
   if (versions.length > 10) {
-    const toDelete = versions.slice(0, versions.length - 10); // Keep the last 10
+    const toDelete = versions.slice(0, versions.length - 10);
 
     toDelete.forEach(version => {
       console.log(`Deleting version: ${version}`);

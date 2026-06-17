@@ -10,9 +10,7 @@ const version = timestamp.slice(2, 12);
 
 updateOrAddEnvVariable('.env', 'TIMESTAMP', timestamp);
 updateOrAddEnvVariable('.env', 'VERSION', version);
-updateOrAddEnvVariable('.env.production', 'TIMESTAMP', timestamp);
-updateOrAddEnvVariable('.env.production', 'VITE_VERSION', version);
-
+updateOrAddEnvVariable('.env', 'VITE_VERSION', version);
 updateOrAddEnvVariable('.env', 'DEPLOY_ENV', env);
 
 function updateOrAddEnvVariable(envFile, key, value) {
